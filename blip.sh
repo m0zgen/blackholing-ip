@@ -29,20 +29,29 @@ check_file() {
   fi
 }
 
+# Check if ip command exists and return true or false
+check_ip_command() {
+  if [ -x "$(command -v ip)" ]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
 # Add to route function
 add_route() {
   # Check for IP
   if [[ $1 =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
     local ip="$1"
     if check_ip_command; then
-      ip route add "$ip" via "$GATEWAY" dev "$INTERFACE"
+      ip route add ${ip} via ${GATEWAY} dev ${INTERFACE}
       echo "Added route for $ip"
     fi
     # echo "Added route for $ip"
   elif [[ $1 =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/[0-9]{1,2}$ ]]; then
     local ip="$1"
     if check_ip_command; then
-      ip route add "$ip" via "$GATEWAY" dev "$INTERFACE"
+      ip route add ${ip} via ${GATEWAY} dev ${INTERFACE}
       echo "Added route for $ip"
     fi
     # echo "Added route for $ip"
@@ -59,15 +68,6 @@ read_ip_list() {
   while IFS= read -r line; do
     add_route "$line"
   done < "$IP_LIST"
-}
-
-# Check if ip command exists and return true or false
-check_ip_command() {
-  if [ -x "$(command -v ip)" ]; then
-    return 0
-  else
-    return 1
-  fi
 }
 
 # Check for arguments --file or --ip
