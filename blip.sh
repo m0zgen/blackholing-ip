@@ -29,25 +29,6 @@ check_file() {
   fi
 }
 
-# Read IP list from file and pass to add_route function
-read_ip_list() {
-  local IP_LIST="$1"
-  check_file "$IP_LIST"
-
-  while IFS= read -r line; do
-    add_route "$line"
-  done < "$IP_LIST"
-}
-
-# Check if ip command exists and return true or false
-check_ip_command() {
-  if [ -x "$(command -v ip)" ]; then
-    return 0
-  else
-    return 1
-  fi
-}
-
 # Add to route function
 add_route() {
   # Check for IP
@@ -67,6 +48,25 @@ add_route() {
     # echo "Added route for $ip"
   else
     echo "String '$1' is not a valid IP address."
+  fi
+}
+
+# Read IP list from file and pass to add_route function
+read_ip_list() {
+  local IP_LIST="$1"
+  check_file "$IP_LIST"
+
+  while IFS= read -r line; do
+    add_route "$line"
+  done < "$IP_LIST"
+}
+
+# Check if ip command exists and return true or false
+check_ip_command() {
+  if [ -x "$(command -v ip)" ]; then
+    return 0
+  else
+    return 1
   fi
 }
 
